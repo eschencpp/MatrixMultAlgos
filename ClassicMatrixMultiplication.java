@@ -55,6 +55,17 @@ public class ClassicMatrixMultiplication{ //Rows in matrix 1 //Columns in matrix
         return matrixSum;
     }
 
+    public static int[][] matrixSubtract(int n,int[][] matrix1, int[][] matrix2){
+        int[][] matrixSum = new int[n][n];
+
+        for(int i = 0; i < n; i++){
+            for(int j = 0; j < n; j++){
+                matrixSum[i][j] = matrix1[i][j] - matrix2[i][j];
+            }
+        }
+        return matrixSum;
+    }
+
     public static int[][] matrixMult(int n, int[][] matrix1, int[][] matrix2){
         for(int i = 0; i < n; i++){
             for(int j = 0; j < n; j++){
@@ -128,7 +139,66 @@ public class ClassicMatrixMultiplication{ //Rows in matrix 1 //Columns in matrix
     }
 
     public static int[][] StrassensMatrixMult(int n, int[][] matrix1, int[][] matrix2){
+        
+        int matrixA11[][]= new int[n/2][n/2];
+        int matrixA12[][]= new int[n/2][n/2];
+        int matrixA21[][]= new int[n/2][n/2];
+        int matrixA22[][]= new int[n/2][n/2];
+        int matrixB11[][]= new int[n/2][n/2];
+        int matrixB12[][]= new int[n/2][n/2];
+        int matrixB21[][]= new int[n/2][n/2];
+        int matrixB22[][]= new int[n/2][n/2];
         int[][] C = new int[n][n];
+
+        // Base case
+        if(n == 2){
+            C[0][0] = (matrix1[0][0] * matrix2[0][0]) + (matrix1[0][1] * matrix2[1][0]);
+			C[0][1] = (matrix1[0][0] * matrix2[0][1]) + (matrix1[0][1] * matrix2[1][1]);
+			C[1][0] = (matrix1[1][0] * matrix2[0][0]) + (matrix1[1][1] * matrix2[1][0]);
+			C[1][1] = (matrix1[1][0] * matrix2[0][1]) + (matrix1[1][1] * matrix2[1][1]);
+            return C;
+        }else{
+            // Split the matrix into 4 until n = 1
+            for(int i = 0; i < n/2; i++){
+                for(int j = 0; j < n/2; j++){
+                    matrixA11[i][j] = matrix1[i][j];
+                    matrixA12[i][j] = matrix1[i][n/2 + j];
+                    matrixA21[i][j] = matrix1[n/2 + i][j];
+                    matrixA22[i][j] = matrix1[n/2 + i][n/2 + j];
+                    //Split Matrix B
+                    matrixB11[i][j] = matrix2[i][j];
+                    matrixB12[i][j] = matrix2[i][n/2 + j];
+                    matrixB21[i][j] = matrix2[n/2 + i][j];
+                    matrixB22[i][j] = matrix2[n/2 + i][n/2 + j];
+                // System.out.printf("\n Row %d Column %d Value %d",i ,j,matrixA11[i][j] );
+                }
+            }
+
+            int[][] P = StrassensMatrixMult(n/2, matrixAddition(n/2, matrixA11, matrixA22), matrixAddition(n/2, matrixB11, matrixB22));
+            int[][] Q = StrassensMatrixMult(n/2, matrixAddition(n/2, matrixA21, matrixA22), matrixB11);
+            int[][] R = StrassensMatrixMult(n/2, matrixA11, matrixSubtract(n/2, matrixB12, matrixB22));
+            int[][] S = StrassensMatrixMult(n/2, matrixA22, matrixSubtract(n/2, matrixB21, matrixB11));
+            int[][] T = StrassensMatrixMult(n/2, matrixAddition(n/2, matrixA11, matrixA12), matrixB22);
+            int[][] U = StrassensMatrixMult(n/2, matrixSubtract(n/2, matrixA21, matrixA11), matrixAddition(n/2, matrixB11, matrixB12));
+            int[][] V = StrassensMatrixMult(n/2, matrixSubtract(n/2, matrixA12, matrixA22), matrixAddition(n/2, matrixB21, matrixB22));
+
+            int[][] C11 = matrixSubtract(n/2, matrixAddition(n/2, matrixAddition(n/2, P, S), V), T);
+            int[][] C12 = matrixAddition(n/2, R, T);
+            int[][] C21 = matrixAddition(n/2, Q, S);
+            int[][] C22 = matrixSubtract(n/2, matrixAddition(n/2, matrixAddition(n/2, P, R), U), Q);
+
+            //Puts together the 4 quadrants (C11,C12,C21,C22) into one matrix C.
+            for(int i = 0; i < n/2; i++){
+                for(int j = 0; j < n/2; j++){
+                    C[i][j] = C11[i][j];
+                    C[i][n/2 + j] = C12[i][j];
+                    C[n/2 + i][j] = C21[i][j];
+                    C[n/2 + i][n/2 + j] = C22[i][j];
+                // System.out.printf("\n Row %d Column %d Value %d",i ,j,matrixA11[i][j] );
+                }
+            }
+        }
+
         return C;
     }
 
@@ -142,6 +212,7 @@ public class ClassicMatrixMultiplication{ //Rows in matrix 1 //Columns in matrix
         printMatrix(4, matrixTestB);
         //matrixMult(4, matrixTestA, matrixTestB);
         //printMatrix(4, matrixProduct);
-        printMatrix(4, divAndConq(4, matrixTestA, matrixTestB));
+        //printMatrix(4, divAndConq(4, matrixTestA, matrixTestB));
+        printMatrix(4, StrassensMatrixMult(4, matrixTestA, matrixTestB));
     }
 }
