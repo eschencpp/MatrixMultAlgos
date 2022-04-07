@@ -1,16 +1,14 @@
+/*
+* CS3310 Project 1: Analysis of Matrix Multiplication Algorithms
+* Eric Chen
+* 4/7/2022
+*/
+
 import java.util.Random;
 import java.util.Scanner;
 
-import javax.xml.stream.events.EndDocument;
-
 public class MatrixMultiplication{ //Rows in matrix 1 //Columns in matrix 2 // Columns in matrix 1 and Rows in Matrix 2
     
-    static int matrix0[][] = {{0,0,0,0},{0,0,0,0},{0,0,0,0},{0,0,0,0}};
-    static int matrixTestA[][] = {{1,2,3,4},{5,6,7,8},{1,2,3,4},{5,6,7,1}};
-    static int matrixTestB[][] = {{5,6,7,1},{5,3,2,5},{5,6,7,8},{1,2,3,4}};
-    int matrixA[][];
-    int matrixB[][];
-    int matrixProduct[][];
     /**
      * Constructor
      * @param n - size of the matrices being multiplied
@@ -23,17 +21,18 @@ public class MatrixMultiplication{ //Rows in matrix 1 //Columns in matrix 2 // C
         }
     }
 
-
+    //Method to print matrices
     public static void printMatrix(int n, int[][] matrix){
             for(int i = 0; i < n; i++){
                 System.out.println();
                 for(int j = 0; j < n; j++){
-                    System.out.printf("%d  ", matrix[i][j]);
+                    System.out.printf("%-6d  ", matrix[i][j]);
                 }
             }
             System.out.println();
         }
-
+    
+    //Method to randomly generate test matrices. Range of numbers from -100 to 100.
     public static void fillMatrix(int n, int[][] matrix1, int[][] matrix2){
         Random rand = new Random();
         int randInt = 0;
@@ -47,6 +46,7 @@ public class MatrixMultiplication{ //Rows in matrix 1 //Columns in matrix 2 // C
         }
     }
 
+    //Helper method to add matrices
     public static int[][] matrixAddition(int n,int[][] matrix1, int[][] matrix2){
         int[][] matrixSum = new int[n][n];
 
@@ -58,6 +58,7 @@ public class MatrixMultiplication{ //Rows in matrix 1 //Columns in matrix 2 // C
         return matrixSum;
     }
 
+    //Helper method to subtract matrices
     public static int[][] matrixSubtract(int n,int[][] matrix1, int[][] matrix2){
         int[][] matrixSum = new int[n][n];
 
@@ -69,6 +70,14 @@ public class MatrixMultiplication{ //Rows in matrix 1 //Columns in matrix 2 // C
         return matrixSum;
     }
 
+    /**
+    * Increment a value by delta and return the new value. 
+    *
+    * @param  n   size of the matrix being multiplied
+    * @param  matrix1   matrix 1 to be multiplied
+    * @param  matrix2   matrix 2 to be multiplied
+    * @return         Matrix C of the product size nxn
+    */
     public static int[][] matrixMult(int n, int[][] matrix1, int[][] matrix2){
         int[][] C = new int[n][n];
         for(int i = 0; i < n; i++){
@@ -83,8 +92,14 @@ public class MatrixMultiplication{ //Rows in matrix 1 //Columns in matrix 2 // C
         return C;
     }
     
-
-    // MatrixProduct[MatrixOne[i][j] x MatrixTwo[j][i]
+    /**
+    * Increment a value by delta and return the new value. 
+    *
+    * @param  n   size of the matrix being multiplied
+    * @param  matrix1   matrix 1 to be multiplied
+    * @param  matrix2   matrix 2 to be multiplied
+    * @return         Matrix C of the product size nxn
+    */
     public static int[][] divAndConq(int n, int[][] matrix1, int[][] matrix2){
 
         int matrixA11[][]= new int[n/2][n/2];
@@ -105,7 +120,7 @@ public class MatrixMultiplication{ //Rows in matrix 1 //Columns in matrix 2 // C
 			C[1][1] = (matrix1[1][0] * matrix2[0][1]) + (matrix1[1][1] * matrix2[1][1]);
             return C;
         }else{
-            // Split the matrix into 4 until n = 1
+            // Split the matrix into 4 until n = 2
             for(int i = 0; i < n/2; i++){
                 for(int j = 0; j < n/2; j++){
                     matrixA11[i][j] = matrix1[i][j];
@@ -117,7 +132,6 @@ public class MatrixMultiplication{ //Rows in matrix 1 //Columns in matrix 2 // C
                     matrixB12[i][j] = matrix2[i][n/2 + j];
                     matrixB21[i][j] = matrix2[n/2 + i][j];
                     matrixB22[i][j] = matrix2[n/2 + i][n/2 + j];
-                // System.out.printf("\n Row %d Column %d Value %d",i ,j,matrixA11[i][j] );
                 }
             }
 
@@ -133,7 +147,6 @@ public class MatrixMultiplication{ //Rows in matrix 1 //Columns in matrix 2 // C
                     C[i][n/2 + j] = C12[i][j];
                     C[n/2 + i][j] = C21[i][j];
                     C[n/2 + i][n/2 + j] = C22[i][j];
-                // System.out.printf("\n Row %d Column %d Value %d",i ,j,matrixA11[i][j] );
                 }
             }
         }
@@ -141,6 +154,14 @@ public class MatrixMultiplication{ //Rows in matrix 1 //Columns in matrix 2 // C
         return C;
     }
 
+    /**
+    * Strassens Matrix Multiplication Algorithm. 
+    *
+    * @param  n   size of the matrix being multiplied
+    * @param  matrix1   matrix 1 to be multiplied
+    * @param  matrix2   matrix 2 to be multiplied
+    * @return         Matrix C of the product size nxn
+    */
     public static int[][] StrassensMatrixMult(int n, int[][] matrix1, int[][] matrix2){
         
         int matrixA11[][]= new int[n/2][n/2];
@@ -173,7 +194,6 @@ public class MatrixMultiplication{ //Rows in matrix 1 //Columns in matrix 2 // C
                     matrixB12[i][j] = matrix2[i][n/2 + j];
                     matrixB21[i][j] = matrix2[n/2 + i][j];
                     matrixB22[i][j] = matrix2[n/2 + i][n/2 + j];
-                // System.out.printf("\n Row %d Column %d Value %d",i ,j,matrixA11[i][j] );
                 }
             }
 
@@ -197,7 +217,6 @@ public class MatrixMultiplication{ //Rows in matrix 1 //Columns in matrix 2 // C
                     C[i][n/2 + j] = C12[i][j];
                     C[n/2 + i][j] = C21[i][j];
                     C[n/2 + i][n/2 + j] = C22[i][j];
-                // System.out.printf("\n Row %d Column %d Value %d",i ,j,matrixA11[i][j] );
                 }
             }
         }
@@ -212,24 +231,22 @@ public class MatrixMultiplication{ //Rows in matrix 1 //Columns in matrix 2 // C
 
         //Take input from user to set n (matrix size)
         Scanner sc = new Scanner(System.in);
-        System.out.println("Please enter the matrix size you are trying to multiply. (2,4,8,16,32,64,128,256)");
+        System.out.println("Please enter the matrix size you are trying to multiply. (2,4,8,16,32,64,128,256,512,1024)");
         int n = sc.nextInt();
         sc.close();
         MatrixMultiplication mm = new MatrixMultiplication(n);
 
         int matrixA[][]= new int[n][n];
         int matrixB[][]= new int[n][n];
-        int numOfSets = 300; //Number of data sets tested
+        int numOfSets = 100; //Number of data sets tested
         int iterations = 10; //Iterations per set
-        long startMM = 0;
-        long endMM = 0;
-        long totalTime = 0;
-        long totalTimeDC = 0;
-        long totalTimeStrass = 0;
-        //long start = System.currentTimeMillis();
-        //For 1000 iterations generate a data set and run it 20 times
-        long totalProgramRuntime = 0;
-        long totalProgramEndtime = 0;
+        long startMM = 0; //MM start timer
+        long endMM = 0; //MM end timer
+        long totalTime = 0; //Total time for ClassicalMM
+        long totalTimeDC = 0;//Total time for Divide and Conquer MM
+        long totalTimeStrass = 0;//Total time for Strassens MM
+        long totalProgramRuntime = 0;//Start timer for whole program
+        long totalProgramEndtime = 0;//End time for whole program
 
         totalProgramRuntime =System.nanoTime();
         for(int i = 0; i < numOfSets; i++){
@@ -267,7 +284,7 @@ public class MatrixMultiplication{ //Rows in matrix 1 //Columns in matrix 2 // C
         System.out.println("Total time Strassens: " + totalTimeStrass);
         }
         System.out.printf("\nTo multiply matrices of size %dx%d: ",n,n);
-        System.out.println("\nhe average time to execute one Classical Matrix Multiplication is: " + totalTime/(iterations*numOfSets) + " nanoseconds.");
+        System.out.println("\nThe average time to execute one Classical Matrix Multiplication is: " + totalTime/(iterations*numOfSets) + " nanoseconds.");
         System.out.println("The average time to execute one Divide and Conquer Matrix Multiplication is: " + totalTimeDC/(iterations*numOfSets) + " nanoseconds.");
         System.out.println("The average time to execute one Strassens Matrix Multiplication is: " + totalTimeStrass/(iterations*numOfSets) + " nanoseconds.");
         totalProgramEndtime = System.nanoTime();
